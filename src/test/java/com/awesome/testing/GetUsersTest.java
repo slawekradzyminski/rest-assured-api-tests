@@ -23,4 +23,11 @@ public class GetUsersTest extends AbstractRestAssuredTest {
         assertThat(users).hasSizeGreaterThanOrEqualTo(1);
     }
 
+    @Test
+    public void shouldNotGetAllUsersWithoutToken(){
+        given().contentType(ContentType.JSON)
+                .header(new Header("Authorization", "Bearer 123"))
+                .when().get("").then().statusCode(403);
+    }
+
 }
