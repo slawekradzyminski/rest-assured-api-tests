@@ -9,6 +9,7 @@ import io.restassured.http.Header;
 import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
 
+import static com.awesome.testing.config.YmlParser.getConfig;
 import static com.awesome.testing.util.UserProvider.getRandomUser;
 import static io.restassured.RestAssured.given;
 
@@ -16,7 +17,7 @@ public abstract class AbstractRestAssuredTest {
 
     @BeforeClass
     public static void setUpRestAssured() {
-        RestAssured.baseURI = "http://localhost:4001/users";
+        RestAssured.baseURI = getConfig().getUrl();
     }
 
     protected String loginAndGetToken(LoginDto loginBody) {
@@ -24,7 +25,7 @@ public abstract class AbstractRestAssuredTest {
                 .when().log().all()
                 .post("/signin");
 
-        response.then().statusCode(200);
+        response.then().statusCode(getConfig().getStatusCode().getOk());
 
         return response.as(LoginResponseDto.class).getToken();
     }
