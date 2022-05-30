@@ -6,6 +6,7 @@ import com.awesome.testing.dto.RegisterDto;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
+import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
 
 import static com.awesome.testing.util.UserProvider.getRandomUser;
@@ -19,8 +20,13 @@ public abstract class AbstractRestAssuredTest {
     }
 
     protected String loginAndGetToken(LoginDto loginBody) {
-        return given().contentType(ContentType.JSON).body(loginBody)
-                .when().post("/signin").as(LoginResponseDto.class).getToken();
+        Response response = given().contentType(ContentType.JSON).body(loginBody)
+                .when().log().all()
+                .post("/signin");
+
+        response.then().statusCode(200);
+
+        return response.as(LoginResponseDto.class).getToken();
     }
 
     protected RegisterDto registerAndGetUser() {
@@ -32,9 +38,10 @@ public abstract class AbstractRestAssuredTest {
         return randomUser;
     }
 
-    protected void deleteUser(RegisterDto user, String token) {
-        given().header(new Header("Authorization", "Bearer " + token))
-                .delete("/" + user.getUsername())
+    protected void deleteUser(String userName, String token) {
+        given().log().all()
+                .header(new Header("Authorization", "Bearer " + token))
+                .delete("/" + userName)
                 .then().statusCode(204);
     }
 }

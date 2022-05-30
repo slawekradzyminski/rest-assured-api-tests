@@ -1,12 +1,11 @@
 package com.awesome.testing;
 
-import com.awesome.testing.dto.RegisterDto;
+import com.awesome.testing.util.UserProvider;
 import io.restassured.http.ContentType;
+import lombok.val;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
-import static com.awesome.testing.util.UserProvider.getRandomUser;
-import static com.awesome.testing.util.UserProvider.getRandomUserBuilder;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
@@ -14,17 +13,18 @@ public class RegisterTest extends AbstractRestAssuredTest {
 
     @Test
     public void shouldSuccessfullyRegister() {
-        RegisterDto registerBody = getRandomUser();
+        val registerBody = UserProvider.getRandomUser();
 
         given().body(registerBody).contentType(ContentType.JSON)
-                .when().post("/signup")
+                .when().log().all()
+                .post("/signup")
                 .then().statusCode(201);
     }
 
     @Test
     public void shouldValidateFirstNameLength() {
-        RegisterDto registerBody = getRandomUserBuilder()
-                .firstName(RandomStringUtils.randomAlphabetic(3))
+        val registerBody = UserProvider.getRandomUserBuilder()
+                .firstName(RandomStringUtils.randomAlphabetic(1))
                 .build();
 
         given().body(registerBody).contentType(ContentType.JSON)
@@ -35,15 +35,18 @@ public class RegisterTest extends AbstractRestAssuredTest {
 
     @Test
     public void shouldValidateEmailLength() {
-        RegisterDto registerBody = getRandomUserBuilder()
+        val registerBody = UserProvider.getRandomUserBuilder()
                 .email(RandomStringUtils.randomAlphabetic(10))
                 .build();
 
         given().body(registerBody).contentType(ContentType.JSON)
-                .when().post("/signup")
+                .when()
+                .log().all()
+                .post("/signup")
                 .then().statusCode(400)
-                .body("email", is("must be a well-formed email address"));
+                .body("email", is("musi być poprawnie sformatowanym adresem e-mail"));
     }
+
 
     @Test
     public void shouldValidateMissingKey() {
@@ -59,9 +62,12 @@ public class RegisterTest extends AbstractRestAssuredTest {
                 "}";
 
         given().body(invalidRequest).contentType(ContentType.JSON)
-                .when().post("/signup")
-                .then().log().all().statusCode(400)
-                .body("email", is("must not be empty"));
+                .when()
+                .log().all()
+                .post("/signup")
+                .then()
+                .log().all()
+                .statusCode(400)
+                .body("email", is("nie może być puste"));
     }
-
 }

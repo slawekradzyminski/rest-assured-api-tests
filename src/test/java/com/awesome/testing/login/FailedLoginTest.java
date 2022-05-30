@@ -15,20 +15,24 @@ public class FailedLoginTest extends AbstractRestAssuredTest {
         LoginDto loginDto = new LoginDto("wrong", "wrong");
 
         given().contentType(ContentType.JSON).body(loginDto)
-                .when().post("/signin")
-                .then().statusCode(422)
+                .when()
+                .post("/signin")
+                .then()
+                .statusCode(422)
                 .body("error", is("Unprocessable Entity"));
     }
 
     @Test
     public void shouldHandleMissingKeyBody() {
-        String requestBody = "{\n" +
-                "    \"username\": \"thurman.monahan\"\n" +
-                "}";
+        String invalidRequest =
+                "{\n" +
+                        " \"username\": \"jamar.greenholtA\" \n" +
+                        "}";
 
-        given().contentType(ContentType.JSON).body(requestBody)
-                .when().post("/signin")
-                .then().log().all().statusCode(422);
+        given().body(invalidRequest).contentType(ContentType.JSON)
+                .when()
+                .post("/signin")
+                .then()
+                .statusCode(422);
     }
-
 }

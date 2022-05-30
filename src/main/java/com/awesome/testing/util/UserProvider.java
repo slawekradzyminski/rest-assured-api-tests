@@ -15,10 +15,10 @@ public class UserProvider {
         return RegisterDto.builder()
                 .firstName(FAKER.name().firstName() + FAKER.random().hex(1))
                 .lastName(FAKER.name().lastName() + FAKER.random().hex(1))
-                .password(FAKER.internet().password() + FAKER.random().hex(1))
+                .password(FAKER.internet().password())
                 .roles(Roles.values())
                 .email(FAKER.internet().emailAddress())
-                .username(FAKER.name().username())
+                .username(FAKER.name().username() + FAKER.random().hex(1))
                 .build();
     }
 
@@ -26,12 +26,9 @@ public class UserProvider {
         return RegisterDto.builder()
                 .firstName(FAKER.name().firstName() + FAKER.random().hex(1))
                 .lastName(FAKER.name().lastName() + FAKER.random().hex(1))
-                .password(FAKER.internet().password() + FAKER.random().hex(1))
+                .password(FAKER.internet().password())
                 .roles(Roles.values())
                 .email(FAKER.internet().emailAddress())
-                .username(FAKER.name().username());
+                .username(FAKER.name().username() + FAKER.random().hex(1));
     }
-
-
-
 }
