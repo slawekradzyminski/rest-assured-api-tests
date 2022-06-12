@@ -1,4 +1,9 @@
 url: http://localhost:4001/users
 statusCode:
   ok: 200
+  created: 201
+  deleted: 204
   badRequest: 400
+  forbidden: 403
+  notFound: 404
+  unprocessableEntity: 422

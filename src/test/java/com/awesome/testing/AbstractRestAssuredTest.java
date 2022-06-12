@@ -1,8 +1,7 @@
 package com.awesome.testing;
 
-import com.awesome.testing.dto.LoginDto;
-import com.awesome.testing.dto.LoginResponseDto;
-import com.awesome.testing.dto.RegisterDto;
+import com.awesome.testing.config.StatusCode;
+import com.awesome.testing.dto.*;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
@@ -15,6 +14,8 @@ import static io.restassured.RestAssured.given;
 
 public abstract class AbstractRestAssuredTest {
 
+    protected StatusCode statusCode = getConfig().getStatusCode();
+
     @BeforeClass
     public static void setUpRestAssured() {
         RestAssured.baseURI = getConfig().getUrl();
@@ -25,7 +26,7 @@ public abstract class AbstractRestAssuredTest {
                 .when().log().all()
                 .post("/signin");
 
-        response.then().statusCode(getConfig().getStatusCode().getOk());
+        response.then().statusCode(statusCode.getOk());
 
         return response.as(LoginResponseDto.class).getToken();
     }
@@ -34,15 +35,37 @@ public abstract class AbstractRestAssuredTest {
         RegisterDto randomUser = getRandomUser();
         given().body(randomUser).contentType(ContentType.JSON)
                 .when().post("/signup")
-                .then().statusCode(201);
+                .then().statusCode(statusCode.getCreated());
 
         return randomUser;
     }
 
+    protected UserResponseDto getSpecificUser(String userName, String token) {
+        Response response = given().contentType(ContentType.JSON)
+                .header(new Header("Authorization", "Bearer " + token))
+                .when()
+                .get("/" + userName);
+         response.then().statusCode(statusCode.getOk());
+
+         return response.as(UserResponseDto.class);
+    }
+
+    protected Response editUser(EditUserDto editedUser, String usernameToEdit, String token){
+        Response response = given()
+                .header(new Header("Authorization", "Bearer " + token))
+                .contentType(ContentType.JSON).body(editedUser)
+                .when()
+                .put("/" + usernameToEdit);
+
+        response.then().statusCode(200);
+
+        return response;
+    }
+
     protected void deleteUser(String userName, String token) {
-        given().log().all()
+        given()
                 .header(new Header("Authorization", "Bearer " + token))
                 .delete("/" + userName)
-                .then().statusCode(204);
+                .then().statusCode(statusCode.getDeleted());
     }
 }

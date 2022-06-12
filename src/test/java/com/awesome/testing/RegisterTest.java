@@ -44,7 +44,7 @@ public class RegisterTest extends AbstractRestAssuredTest {
                 .when()
                 .log().all()
                 .post("/signup")
-                .then().statusCode(400)
+                .then().statusCode(statusCode.getBadRequest())
                 .body("email", is("musi być poprawnie sformatowanym adresem e-mail"));
     }
 
@@ -68,7 +68,7 @@ public class RegisterTest extends AbstractRestAssuredTest {
                 .post("/signup")
                 .then()
                 .log().all()
-                .statusCode(400)
+                .statusCode(statusCode.getBadRequest())
                 .body("email", is("nie może być puste"));
     }
 }

@@ -11,5 +11,9 @@ public class StatusCode {
 
     int ok;
     int badRequest;
-
+    int forbidden;
+    int created;
+    int deleted;
+    int notFound;
+    int unprocessableEntity;
 }

@@ -41,24 +41,10 @@ public class EditUsersTest extends AbstractRestAssuredTest {
                 .roles(user.getRoles())
                 .build();
 
-        Response response = given()
-                .header(new Header("Authorization", "Bearer " + token))
-                .contentType(ContentType.JSON).body(newUser)
-                .when()
-                .put("/" + user.getUsername());
+        editUser(newUser, user.getUsername(), token);
 
-        response.then().statusCode(200);
+        UserResponseDto editedUser = getSpecificUser(user.getUsername(), token);
 
-        Response responsGet = given()
-                .header(new Header("Authorization", "Bearer " + token))
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/" + user.getUsername());
-        responsGet
-                .then()
-                .statusCode(200);
-
-        UserResponseDto editedUser = responsGet.as(UserResponseDto.class);
         Assertions.assertThat(editedUser.getFirstName()).isEqualTo(newUser.getFirstName());
         Assertions.assertThat(editedUser.getLastName()).isEqualTo(newUser.getLastName());
         Assertions.assertThat(editedUser.getEmail()).isEqualTo(newUser.getEmail());
