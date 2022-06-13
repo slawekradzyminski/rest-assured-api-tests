@@ -11,5 +11,4 @@ public class LocalConfig {
 
     String url;
     StatusCode statusCode;
-
 }

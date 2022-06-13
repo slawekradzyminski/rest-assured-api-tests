@@ -18,7 +18,7 @@ public class FailedLoginTest extends AbstractRestAssuredTest {
                 .when()
                 .post("/signin")
                 .then()
-                .statusCode(422)
+                .statusCode(statusCode.getUnprocessableEntity())
                 .body("error", is("Unprocessable Entity"));
     }
 
@@ -33,6 +33,6 @@ public class FailedLoginTest extends AbstractRestAssuredTest {
                 .when()
                 .post("/signin")
                 .then()
-                .statusCode(422);
+                .statusCode(statusCode.getUnprocessableEntity());
     }
 }
