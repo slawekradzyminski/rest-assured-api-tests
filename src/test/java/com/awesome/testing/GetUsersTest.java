@@ -50,7 +50,7 @@ public class GetUsersTest extends AbstractRestAssuredTest {
                 .when()
                 .get("")
                 .then()
-                .statusCode(config.getStatusCode().getForbidden());
+                .statusCode(statusCode.getForbidden());
     }
 
     @Test

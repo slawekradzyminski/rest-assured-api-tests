@@ -27,7 +27,8 @@ public abstract class AbstractRestAssuredTest extends AbstractTestNGSpringContex
 
     @Autowired
     protected LocalConfig config;
-    
+
+    @Autowired
     protected StatusCode statusCode;
     
     @BeforeClass
