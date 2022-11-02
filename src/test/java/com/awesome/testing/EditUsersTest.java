@@ -1,21 +1,18 @@
 package com.awesome.testing;
 
-import com.awesome.testing.dto.*;
+import com.awesome.testing.dto.EditUserDto;
+import com.awesome.testing.dto.LoginDto;
+import com.awesome.testing.dto.RegisterDto;
+import com.awesome.testing.dto.UserResponseDto;
 import com.github.javafaker.Faker;
-import io.restassured.http.ContentType;
-import io.restassured.http.Header;
-import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.given;
-
 public class EditUsersTest extends AbstractRestAssuredTest {
 
     private static final Faker FAKER = new Faker();
-
     private RegisterDto user;
     private String token;
 

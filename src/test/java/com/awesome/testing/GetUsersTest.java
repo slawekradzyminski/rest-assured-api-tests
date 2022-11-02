@@ -6,7 +6,6 @@ import com.awesome.testing.dto.UserResponseDto;
 import com.github.javafaker.Faker;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
-import org.assertj.core.api.Assertions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -16,8 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GetUsersTest extends AbstractRestAssuredTest {
 
-    private static final Faker FAKER = new Faker();
 
+    private static final Faker FAKER = new Faker();
     private RegisterDto user;
     private String token;
 
@@ -51,7 +50,7 @@ public class GetUsersTest extends AbstractRestAssuredTest {
                 .when()
                 .get("")
                 .then()
-                .statusCode(statusCode.getForbidden());
+                .statusCode(config.getStatusCode().getForbidden());
     }
 
     @Test

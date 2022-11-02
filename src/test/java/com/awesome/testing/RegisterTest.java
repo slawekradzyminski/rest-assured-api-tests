@@ -6,7 +6,6 @@ import lombok.val;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
-import static com.awesome.testing.config.YmlParser.getConfig;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
@@ -29,8 +28,9 @@ public class RegisterTest extends AbstractRestAssuredTest {
                 .build();
 
         given().body(registerBody).contentType(ContentType.JSON)
-                .when().post("/signup")
-                .then().statusCode(getConfig().getStatusCode().getBadRequest())
+                .when()
+                .post("/signup")
+                .then().statusCode(statusCode.getBadRequest())
                 .body("firstName", is("Minimum firstName length: 4 characters"));
     }
 

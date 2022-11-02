@@ -1,24 +1,38 @@
 package com.awesome.testing;
 
+import com.awesome.testing.config.LocalConfig;
+import com.awesome.testing.config.SpringConfig;
 import com.awesome.testing.config.StatusCode;
 import com.awesome.testing.dto.*;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 
-import static com.awesome.testing.config.YmlParser.getConfig;
+
 import static com.awesome.testing.util.UserProvider.getRandomUser;
 import static io.restassured.RestAssured.given;
 
-public abstract class AbstractRestAssuredTest {
+@SpringBootTest
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = SpringConfig.class)
+@EnableConfigurationProperties
+public abstract class AbstractRestAssuredTest extends AbstractTestNGSpringContextTests {
 
-    protected StatusCode statusCode = getConfig().getStatusCode();
-
+    @Autowired
+    protected LocalConfig config;
+    
+    protected StatusCode statusCode;
+    
     @BeforeClass
-    public static void setUpRestAssured() {
-        RestAssured.baseURI = getConfig().getUrl();
+    public void setUpRestAssured() {
+        RestAssured.baseURI = config.getUrl();
     }
 
     protected String loginAndGetToken(LoginDto loginBody) {
@@ -45,19 +59,19 @@ public abstract class AbstractRestAssuredTest {
                 .header(new Header("Authorization", "Bearer " + token))
                 .when()
                 .get("/" + userName);
-         response.then().statusCode(statusCode.getOk());
+        response.then().statusCode(statusCode.getOk());
 
-         return response.as(UserResponseDto.class);
+        return response.as(UserResponseDto.class);
     }
 
-    protected Response editUser(EditUserDto editedUser, String usernameToEdit, String token){
+    protected Response editUser(EditUserDto editedUser, String usernameToEdit, String token) {
         Response response = given()
                 .header(new Header("Authorization", "Bearer " + token))
                 .contentType(ContentType.JSON).body(editedUser)
                 .when()
                 .put("/" + usernameToEdit);
 
-        response.then().statusCode(200);
+        response.then().statusCode(statusCode.getOk());
 
         return response;
     }
